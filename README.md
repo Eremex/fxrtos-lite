@@ -48,7 +48,7 @@ How to build the library from sources:
     - GCC_PREFIX as compiler prefix if you use GCC (i.e. 'arm-none-eabi-' for ARM)
     - FXDJ as dependency injection tool (i.e. 'fx-dj.py')
 - Enter directory for target core (i.e. 'cores\standard-cortex-m3')
-- Run 'build.bat' on Windows or 'make lib' on Linux/Mac (ARM only)
+- Run 'build.bat' on Windows or 'make src' and then 'make lib' on Linux/Mac (ARM only)
 
 Limitations
 -----------
