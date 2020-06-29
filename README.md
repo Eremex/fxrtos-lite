@@ -1,5 +1,3 @@
-README.MD
-
 Description
 -----------
 
@@ -38,26 +36,19 @@ No external dependencies required except the compiler.
 Getting started
 ---------------
 
-For those who do not want to mess with toolchains and source code we provide prebuilt binaries (see demo folder in 'preconfigured' kernel repository). ARM version is compatible with any Cortex-M3+ chip and may
-be used as just two files: header and library.
-
-While binary version may be sufficient for most users it lacks configuration and optimization options. The OS may be either rebuilt as a binary or it can be added as file set in IDE like Keil/IAR.
-
-Compiler installation:
-
-Windows:
-
-https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads
-
-Linux:
-
-	sudo apt install binutils-arm-none-eabi gcc-arm-none-eabi
+This repository contains non-configured version of the kernel represented as a set of components. It is useful if you want to contribute to OS. 
+In case if you just need a kernel to use in your embedded application consider using preconfigured kernels available for [ARM](https://github.com/Eremex/fxrtos-lite-armv7m) and for [RISC-V](https://github.com/Eremex/fxrtos-lite-riscv32).
 
 How to build the library from sources:
+
+- Ensure [fx-dj.py](https://github.com/Eremex/fx-dj) script is available via PATH
 - Ensure supported compiler is available via PATH
-- Set GCC_PREFIX variable for GCC (arm-none-eabi- for ARM)
-- Enter directory for target core (i.e. standard-cortex-m3)
-- Run build.bat on Windows (or make lib on Linux/Mac (ARM only))
+- Set environment variables
+    - FXRTOS_DIR as path to kernel root folder
+    - GCC_PREFIX as compiler prefix if you use GCC (i.e. 'arm-none-eabi-' for ARM)
+    - FXDJ as dependency injection tool (i.e. 'fx-dj.py')
+- Enter directory for target core (i.e. 'cores\standard-cortex-m3')
+- Run 'build.bat' on Windows or 'make lib' on Linux/Mac (ARM only)
 
 Limitations
 -----------
