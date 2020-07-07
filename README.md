@@ -63,3 +63,7 @@ When developing latency-critical applications using Lite edition the following l
 - Priority-based notification policy with synchronization objects (i.e. posting semaphore and releasing the most prioritized waiting thread) uses linear search with scheduling disabled. This means that N waiting threads results in unbounded O(n) scheduling and interrupt latency. Possible solutions: use FIFO notification policy or limit maximum number of waiting threads for any synchronization object.
 - Message queue flush releases up to N threads where N is queue length. Possible solutions: do not use queue flushing or limit queue length to reasonable value.
 - Timers implementation uses sorted queues and linear search resulting in O(n) latency depending on number of active timers in the system. Possible solutions: Limit maximum number of software timers and do not use timeslicing.
+
+Support
+-----------
+For questions on using FX-RTOS, contact authors via telegram group (https://t.me/fxrtos).
