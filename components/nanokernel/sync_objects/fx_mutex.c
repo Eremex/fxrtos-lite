@@ -80,35 +80,7 @@ fx_mutex_test_and_wait(
         }
 
         if (wait)
-        {
-            if (mutex->ceiling_enabled)
-            {
-                //
-                // If this thread did not get the mutex, but its priority it 
-                // greater thanany thread in the waiting queue then set its 
-                // priority as new dynamic ceiling and forward it to the owner.
-                // N.B. Since we are holding mutex spinlock now, owner cannot 
-                // release the object and priority ceiling may only be applied 
-                // in mutex-guarded area.
-                //
-                if (fx_sched_params_is_preempt(
-                        fx_thread_as_sched_params(me), 
-                        &mutex->ceiling_dyn))
-                {
-                    fx_sched_params_copy(
-                        fx_thread_as_sched_params(me), 
-                        &mutex->ceiling_dyn
-                    );
-
-                    fx_thread_lock(mutex->owner);
-                    fx_sched_item_set_params(
-                        fx_thread_as_sched_item(mutex->owner), 
-                        &mutex->ceiling_dyn
-                    );
-                    fx_thread_unlock(mutex->owner);                    
-                }                       
-            }
-            
+        {            
             _fx_sync_wait_start(object, wb); 
             trace_mutex_acquire_block(&mutex->trace_handle);
         }
@@ -124,27 +96,20 @@ fx_mutex_test_and_wait(
         );
 
         if (fx_sched_params_is_preempt(
-                &mutex->ceiling_dyn, 
+                &mutex->ceiling_orig, 
                 fx_thread_as_sched_params(me)))
         {
             fx_thread_lock(me);
             fx_sched_item_set_params(
                 fx_thread_as_sched_item(me), 
-                &mutex->ceiling_dyn
+                &mutex->ceiling_orig
             );
             fx_thread_unlock(me);
 
             trace_thread_ceiling(
                 fx_thread_as_trace_handle(me), 
                 fx_sched_params_as_number(&mutex->owner_params),
-                fx_sched_params_as_number(&mutex->ceiling_dyn)
-            );
-        }
-        else
-        {
-            fx_sched_params_copy(
-                fx_thread_as_sched_params(me), 
-                &mutex->ceiling_dyn
+                fx_sched_params_as_number(&mutex->ceiling_orig)
             );
         }
     }
@@ -196,7 +161,6 @@ fx_mutex_init(
     {
         mutex->ceiling_enabled = true; 
         fx_sched_params_init_prio(&mutex->ceiling_orig, priority);
-        fx_sched_params_init_prio(&mutex->ceiling_dyn, priority);
         fx_sched_params_init(
             &mutex->owner_params, 
             FX_SCHED_PARAMS_INIT_DEFAULT, 
@@ -350,18 +314,23 @@ fx_mutex_release_with_policy(fx_mutex_t* mutex, fx_sync_policy_t policy)
                     &mutex->owner_params
                 );
 
-                fx_thread_lock(mutex->owner);
-                fx_sched_item_set_params(
-                    fx_thread_as_sched_item(mutex->owner), 
-                    &mutex->ceiling_dyn
-                );
-                fx_thread_unlock(mutex->owner);
+                if (fx_sched_params_is_preempt(
+                        &mutex->ceiling_orig, 
+                        fx_thread_as_sched_params(mutex->owner)))
+                {
+                    fx_thread_lock(mutex->owner);
+                    fx_sched_item_set_params(
+                        fx_thread_as_sched_item(mutex->owner), 
+                        &mutex->ceiling_orig
+                    );
+                    fx_thread_unlock(mutex->owner);
 
-                trace_thread_ceiling(
-                    fx_thread_as_trace_handle(mutex->owner), 
-                    fx_sched_params_as_number(&mutex->owner_params),
-                    fx_sched_params_as_number(&mutex->ceiling_dyn)
-                );
+                    trace_thread_ceiling(
+                        fx_thread_as_trace_handle(mutex->owner), 
+                        fx_sched_params_as_number(&mutex->owner_params),
+                        fx_sched_params_as_number(&mutex->ceiling_orig)
+                    );
+                }
             }
 
             _fx_sync_wait_notify(&mutex->waitable, FX_WAIT_SATISFIED, wb);
@@ -373,7 +342,6 @@ fx_mutex_release_with_policy(fx_mutex_t* mutex, fx_sync_policy_t policy)
         else
         {
             mutex->owner = NULL;
-            fx_sched_params_copy(&mutex->ceiling_orig, &mutex->ceiling_dyn);
             trace_mutex_released(&mutex->trace_handle, NULL);
         }  
 
@@ -396,7 +364,7 @@ fx_mutex_release_with_policy(fx_mutex_t* mutex, fx_sync_policy_t policy)
 
             trace_thread_deceiling(
                 fx_thread_as_trace_handle(me), 
-                fx_sched_params_as_number(&mutex->ceiling_dyn),
+                fx_sched_params_as_number(&mutex->ceiling_orig),
                 fx_sched_params_as_number(&sched_params)
             );
         }

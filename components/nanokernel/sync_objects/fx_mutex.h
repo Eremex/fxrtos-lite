@@ -60,7 +60,6 @@ typedef struct
     fx_thread_t* volatile owner;
     volatile uint_fast16_t recursive_locks;
     bool ceiling_enabled;
-    fx_sched_params_t ceiling_dyn;
     fx_sched_params_t ceiling_orig;
     fx_sched_params_t owner_params;
     fx_sync_policy_t policy;
