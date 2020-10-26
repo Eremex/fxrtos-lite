@@ -94,18 +94,15 @@ hal_async_lower_spl(const spl_t spl)
     hw_cpu_intr_disable();
     (void) _hal_async_spl_set(spl);
 
+    if (spl == SPL_LOW && g_hal_intr_dispatch_req != 0)
+    {
+        hal_intr_check_swi();
+    }
+
     if (spl != SPL_SYNC)
     {
         hw_cpu_intr_enable();
     }
-
-    if (spl == SPL_LOW)
-    {
-        if (g_hal_intr_dispatch_req != 0)
-        {
-            hal_intr_check_swi();
-        }
-    }    
 }
 
 //!
