@@ -37,9 +37,20 @@ Getting started
 ---------------
 
 This repository contains non-configured version of the kernel represented as a set of components. It is useful if you want to contribute to OS. 
-In case if you just need a kernel to use in your embedded application consider using preconfigured kernels available for [ARM](https://github.com/Eremex/fxrtos-lite-armv7m) and for [RISC-V](https://github.com/Eremex/fxrtos-lite-riscv32).
+In case if you just need a kernel to use in your embedded application consider using preconfigured kernels available for ARM and RISC-V.
 
-How to build the library from sources:
+### How to build the library from preconfigured sources:
+
+- Download and unpack appropriate release archive from [Releases](https://github.com/Eremex/fxrtos-lite/releases)
+- Ensure supported compiler is available via PATH
+- Set GCC_PREFIX as compiler prefix if you use GCC (i.e. 'riscv-none-embed-')
+- Enter directory where build.bat is located
+- Run 'build.bat'
+
+For those who do not want to mess with toolchains and source code we provide prebuilt binaries. While binary version may be sufficient for most users it lacks configuration and optimization options.
+*ARM version is compatible with any Cortex-M3+ chip and supported by Keil MDK and IAR EWARM toolchains also.*
+
+### How to build the library from scratch:
 
 - Ensure [fx-dj.py](https://github.com/Eremex/fx-dj) script is available via PATH
 - Ensure supported compiler is available via PATH
@@ -49,6 +60,10 @@ How to build the library from sources:
     - FXDJ as dependency injection tool (i.e. 'fx-dj.py')
 - Enter directory for target core (i.e. 'cores\standard-cortex-m3')
 - Run 'build.bat' on Windows or 'make src' and then 'make lib' on Linux/Mac (ARM only)
+
+### How to apply
+The OS may be linked to the project as a binary or it can be added as set of source files in IDE.
+Demonstrations of use are located in [fxrtos-examples](https://github.com/Eremex/fxrtos-examples) repo.
 
 Limitations
 -----------
