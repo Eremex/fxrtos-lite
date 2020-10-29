@@ -27,6 +27,13 @@ Lite version supports only two most common CPU architectures:
 - ARM Cortex-M3+ (ARMv7-M architecture, may also be used on ARMv8-M)
 - RISC-V (RV32I profile)
 
+### Current configurations:
+ Release | Platform
+:--- | :---
+`async-cortex-m3-GNU-tools.zip` | Minimal OS using event service routines instead threads for cortex-m3+ MCU's
+`standard-cortex-m3.zip` | Regular configuration for cortex-m3+ MCU's
+`standard-riscv32i-GNU-tools.zip` | Regular configuration for RISC-V rv32i ISA
+
 ARM version supports GCC, Keil MDK and IAR EWARM compilers.
 RISC-V version supports only GCC at now.
 
@@ -43,7 +50,7 @@ In case if you just need a kernel to use in your embedded application consider u
 
 - Download and unpack appropriate release archive from [Releases](https://github.com/Eremex/fxrtos-lite/releases)
 - Ensure supported compiler is available via PATH
-- Set GCC_PREFIX as compiler prefix if you use GCC (i.e. 'riscv-none-embed-'). ARM version is supported by Keil and IAR EWARM toolchains also
+- Set GCC_PREFIX as compiler prefix if you use GCC (i.e. 'riscv-none-embed-')
 - Enter directory where build.bat is located
 - Run 'build.bat'
 
