@@ -43,12 +43,11 @@ In case if you just need a kernel to use in your embedded application consider u
 
 - Download and unpack appropriate release archive from [Releases](https://github.com/Eremex/fxrtos-lite/releases)
 - Ensure supported compiler is available via PATH
-- Set GCC_PREFIX as compiler prefix if you use GCC (i.e. 'riscv-none-embed-')
+- Set GCC_PREFIX as compiler prefix if you use GCC (i.e. 'riscv-none-embed-'). ARM version is supported by Keil and IAR EWARM toolchains also
 - Enter directory where build.bat is located
 - Run 'build.bat'
 
 For those who do not want to mess with toolchains and source code we provide prebuilt binaries. While binary version may be sufficient for most users it lacks configuration and optimization options.
-*ARM version is compatible with any Cortex-M3+ chip and supported by Keil MDK and IAR EWARM toolchains also.*
 
 ### How to build the library from scratch:
 
