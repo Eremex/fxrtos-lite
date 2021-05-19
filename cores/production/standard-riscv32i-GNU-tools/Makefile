@@ -12,6 +12,8 @@ C_OBJS = $(C_SRCS:.c=.o)
 ASM_OBJS = $(ASM_SRCS:.S=.o)
 
 src:
+	@[ "${FXDJ}" ] || (echo "FXDJ is not set" ; exit 1)
+	@[ "${FXRTOS_DIR}" ] || (echo "FXRTOS_DIR is not set" ; exit 1)
 	@echo Performing dependency injection: sources root = $(FXRTOS_DIR)
 	mkdir src
 	export FX_PREP="$(GCC_PREFIX)gcc -E -Isrc -ffreestanding -include %s %s"; \
