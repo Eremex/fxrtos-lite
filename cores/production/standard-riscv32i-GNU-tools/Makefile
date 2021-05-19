@@ -6,10 +6,14 @@
 #
 
 GCC_PREFIX ?= riscv64-elf-
+CC=$(GCC_PREFIX)gcc
+
 C_SRCS = $(wildcard src/*.c)
 ASM_SRCS = $(wildcard src/*.S)
-C_OBJS = $(C_SRCS:.c=.o)
-ASM_OBJS = $(ASM_SRCS:.S=.o)
+OBJS = $(C_SRCS:.c=.o) $(ASM_SRCS:.S=.o)
+
+CFLAGS=-pedantic -std=c99 -O2 -Wall -ffunction-sections -march=rv32i -mabi=ilp32 -Isrc -ffreestanding -include includes.inc
+ASFLAGS=-include includes.inc -march=rv32i -mabi=ilp32 -Isrc
 
 src:
 	@[ "${FXDJ}" ] || (echo "FXDJ is not set" ; exit 1)
@@ -21,18 +25,13 @@ src:
 	echo '#define FX_INTERFACE(hdr) <hdr.h>' > src/includes.inc
 	echo '#define FX_METADATA(data)' >> src/includes.inc
 
-src/%.o : src/%.c
-	$(GCC_PREFIX)gcc -pedantic -std=c99 -O2 -Wall -ffunction-sections -march=rv32i -mabi=ilp32 -Isrc -ffreestanding -include includes.inc -c -o $@ $<
-
-src/%.o : src/%.S
-	$(GCC_PREFIX)gcc -include includes.inc -march=rv32i -mabi=ilp32  -Isrc -c -o $@ $<
-
-lib : $(C_OBJS) $(ASM_OBJS)
+lib : $(OBJS)
 	$(GCC_PREFIX)ar rcs libfxrtos.a $(C_OBJS) $(ASM_OBJS)
 	echo '#define FX_INTERFACE(hdr) <stddef.h>' > FXRTOS.h
 	echo '#define FX_METADATA(data)' >> FXRTOS.h
 	for header in $(addsuffix .h, $(shell cat src/fxrtos.lst)); do cat src/$$header >> FXRTOS.h; done
 
+.PHONY: clean
 clean:
-	rm -f src/*.o *.tmp FXRTOS.h libfxrtos.a
+	rm -f $(OBJS) *.tmp FXRTOS.h libfxrtos.a
 
