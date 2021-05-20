@@ -26,7 +26,7 @@ src:
 	echo '#define FX_METADATA(data)' >> src/includes.inc
 
 lib : $(OBJS)
-	$(GCC_PREFIX)ar rcs libfxrtos.a $(C_OBJS) $(ASM_OBJS)
+	$(GCC_PREFIX)ar rcs libfxrtos.a $(OBJS)
 	echo '#define FX_INTERFACE(hdr) <stddef.h>' > FXRTOS.h
 	echo '#define FX_METADATA(data)' >> FXRTOS.h
 	for header in $(addsuffix .h, $(shell cat src/fxrtos.lst)); do cat src/$$header >> FXRTOS.h; done
