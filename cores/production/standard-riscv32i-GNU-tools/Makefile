@@ -5,15 +5,15 @@
 # Use 'make' or 'make lib' to create library containing the kernel.
 #
 
-GCC_PREFIX ?= arm-none-eabi-
+GCC_PREFIX ?= riscv64-elf-
 CC=$(GCC_PREFIX)gcc
 
 C_SRCS = $(wildcard src/*.c)
 ASM_SRCS = $(wildcard src/*.S)
 OBJS = $(C_SRCS:.c=.o) $(ASM_SRCS:.S=.o)
 
-CFLAGS=-pedantic -std=c99 -O2 -Wall -ffunction-sections -mcpu=cortex-m3 -mthumb -Isrc -ffreestanding -include includes.inc
-ASFLAGS=-include includes.inc -mcpu=cortex-m3 -Isrc
+CFLAGS=-pedantic -std=c99 -O2 -Wall -ffunction-sections -march=rv32i -mabi=ilp32 -Isrc -ffreestanding -include includes.inc
+ASFLAGS=-include includes.inc -march=rv32i -mabi=ilp32 -Isrc
 
 MAP_FILE ?= lite.map
 

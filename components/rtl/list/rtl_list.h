@@ -64,7 +64,8 @@ rtl_list_remove(rtl_list_t* node)
 {
     node->prev->next = node->next;
     node->next->prev = node->prev;
-    node->next = node->prev = (rtl_list_linkage_t*)0;
+    node->next = (rtl_list_linkage_t*)0;
+    node->prev = (rtl_list_linkage_t*)0;
 }
 
 static inline void 

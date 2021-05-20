@@ -37,6 +37,11 @@
 #define HAL_INTR_STACK_SIZE 0x400
 #define RTL_MEM_POOL_MAX_CHUNK 15
 
+#define RV_SPEC_MSTATUS_MPP_M (3 << 11)
+#define RV_SPEC_MSTATUS_MPIE (1 << 7)
+#define RV_SPEC_MSTATUS_MIE 8
+#define RV_SPEC_INT_RET	mret
+
 FX_METADATA(({ interface: [CFG_OPTIONS, STANDARD_RV32I_GNU] }))
 
 #endif

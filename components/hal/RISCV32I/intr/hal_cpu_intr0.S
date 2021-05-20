@@ -33,75 +33,41 @@
 
 ;FX_METADATA(({ implementation: [HAL_CPU_INTR, RV32I] }))
 
-#define MSTATUS_MPP_M (3 << 11)
-#define MSTATUS_MPIE (1 << 7)
 #define CONTEXT_SIZE (29 * 4)
 
-#define SAVE____GPRS  \
-    sw  ra,  4(sp);   \
-    sw  x5,  8(sp);   \
-    sw  x6,  12(sp);  \
-    sw  x7,  16(sp);  \
-    sw  x28, 20(sp);  \
-    sw  x29, 24(sp);  \
-    sw  x30, 28(sp);  \
-    sw  x31, 32(sp);  \
-    sw  x10, 36(sp);  \
-    sw  x11, 40(sp);  \
-    sw  x12, 44(sp);  \
-    sw  x13, 48(sp);  \
-    sw  x14, 52(sp);  \
-    sw  x15, 56(sp);  \
-    sw  x16, 60(sp);  \
-    sw  x17, 64(sp);  \
-    sw  x8,  68(sp);  \
-    sw  x9,  72(sp);  \
-    sw  x18, 76(sp);  \
-    sw  x19, 80(sp);  \
-    sw  x20, 84(sp);  \
-    sw  x21, 88(sp);  \
-    sw  x22, 92(sp);  \
-    sw  x23, 96(sp);  \
-    sw  x24, 100(sp); \
-    sw  x25, 104(sp); \
-    sw  x26, 108(sp); \
-    sw  x27, 112(sp);  
-
-#define LOAD____GPRS  \
-    lw  ra,  4(sp);   \
-    lw  x5,  8(sp);   \
-    lw  x6,  12(sp);  \
-    lw  x7,  16(sp);  \
-    lw  x28, 20(sp);  \
-    lw  x29, 24(sp);  \
-    lw  x30, 28(sp);  \
-    lw  x31, 32(sp);  \
-    lw  x10, 36(sp);  \
-    lw  x11, 40(sp);  \
-    lw  x12, 44(sp);  \
-    lw  x13, 48(sp);  \
-    lw  x14, 52(sp);  \
-    lw  x15, 56(sp);  \
-    lw  x16, 60(sp);  \
-    lw  x17, 64(sp);  \
-    lw  x8,  68(sp);  \
-    lw  x9,  72(sp);  \
-    lw  x18, 76(sp);  \
-    lw  x19, 80(sp);  \
-    lw  x20, 84(sp);  \
-    lw  x21, 88(sp);  \
-    lw  x22, 92(sp);  \
-    lw  x23, 96(sp);  \
-    lw  x24, 100(sp); \
-    lw  x25, 104(sp); \
-    lw  x26, 108(sp); \
-    lw  x27, 112(sp);  
-
-/*TODO: context save/restore with interrupts enabled. */
+#define MOVE____GPRS(cmd)  \
+    cmd  ra,  4(sp);   \
+    cmd  x5,  8(sp);   \
+    cmd  x6,  12(sp);  \
+    cmd  x7,  16(sp);  \
+    cmd  x28, 20(sp);  \
+    cmd  x29, 24(sp);  \
+    cmd  x30, 28(sp);  \
+    cmd  x31, 32(sp);  \
+    cmd  x10, 36(sp);  \
+    cmd  x11, 40(sp);  \
+    cmd  x12, 44(sp);  \
+    cmd  x13, 48(sp);  \
+    cmd  x14, 52(sp);  \
+    cmd  x15, 56(sp);  \
+    cmd  x16, 60(sp);  \
+    cmd  x17, 64(sp);  \
+    cmd  x8,  68(sp);  \
+    cmd  x9,  72(sp);  \
+    cmd  x18, 76(sp);  \
+    cmd  x19, 80(sp);  \
+    cmd  x20, 84(sp);  \
+    cmd  x21, 88(sp);  \
+    cmd  x22, 92(sp);  \
+    cmd  x23, 96(sp);  \
+    cmd  x24, 100(sp); \
+    cmd  x25, 104(sp); \
+    cmd  x26, 108(sp); \
+    cmd  x27, 112(sp);  
 
 ASM_ENTRY1(hal_intr_entry)
     addi    sp, sp, -CONTEXT_SIZE
-    SAVE____GPRS
+    MOVE____GPRS(sw)
     csrr    t0, mepc
     sw      t0, 0(sp)
     csrr    a0, mcause
@@ -126,13 +92,13 @@ asynchronous_intr:
     la      t0, g_hal_intr_stack_frame
     lw      sp, 0(t0)
 context_restore:
-    li      t0, (MSTATUS_MPP_M | MSTATUS_MPIE)
-    csrw    mstatus, t0
+    li      t0, (RV_SPEC_MSTATUS_MPP_M | RV_SPEC_MSTATUS_MPIE)
+    csrs    mstatus, t0
     lw      t0, 0(sp)
     csrw    mepc, t0
-    LOAD____GPRS
+    MOVE____GPRS(lw)
     addi    sp, sp, CONTEXT_SIZE
-    mret
+    RV_SPEC_INT_RET
 synchronous_trap:
     jal     hal_trap_handler
     j       context_restore
@@ -140,9 +106,8 @@ synchronous_trap:
 
 ASM_ENTRY1(hal_intr_check_swi)
     addi    sp, sp, -CONTEXT_SIZE
-    SAVE____GPRS
+    MOVE____GPRS(sw)
     sw      ra, 0(sp)
-    csrc    mstatus, 8
     la      t0, g_hal_intr_nesting
     li      t1, 1
     sw      t1, 0(t0)
@@ -157,8 +122,8 @@ ASM_ENTRY1(hal_intr_check_swi)
     lw      sp, 0(t0)
     lw      t0, 0(sp)
     csrw    mepc, t0
-    li      t0, (MSTATUS_MPP_M | MSTATUS_MPIE)
-    csrw    mstatus, t0
-    LOAD____GPRS
+    li      t0, (RV_SPEC_MSTATUS_MPP_M | RV_SPEC_MSTATUS_MPIE)
+    csrs    mstatus, t0
+    MOVE____GPRS(lw)
     addi    sp, sp, CONTEXT_SIZE
-    mret
+    RV_SPEC_INT_RET

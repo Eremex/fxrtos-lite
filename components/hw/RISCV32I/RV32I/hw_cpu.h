@@ -33,6 +33,25 @@
 
 #include FX_INTERFACE(LANG_TYPES)
 
+enum
+{
+    HW_CPU_TIMER_VECT = 7,
+    HW_CPU_SWI_VECT = 3,
+
+    HW_CPU_MSTATUS_MIE = 8,
+    HW_CPU_MIE_MSIE = 8,
+};
+
+//!
+//! System CSRs access.
+//!
+uintptr_t hw_cpu_mscratch_get(void);
+void hw_cpu_mscratch_set(uintptr_t);
+uintptr_t hw_cpu_mstatus_get(void);
+uintptr_t hw_cpu_mie_get(void);
+void hw_cpu_mie_set(uintptr_t);
+void hw_cpu_msie_set(unsigned int);
+
 //!
 //! Memory barrier.
 //!

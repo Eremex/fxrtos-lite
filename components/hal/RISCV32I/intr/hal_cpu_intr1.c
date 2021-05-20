@@ -30,7 +30,7 @@
 
 #include FX_INTERFACE(HAL_CPU_INTR)
 #include FX_INTERFACE(HW_CPU)
-  
+
 FX_METADATA(({ implementation: [HAL_CPU_INTR, RV32I] }))
 
 hal_intr_frame_t* volatile g_hal_intr_stack_frame = NULL;
@@ -53,7 +53,7 @@ _hal_async_spl_set(const spl_t spl)
 
 //!
 //! Calls Os' dispatch interrupt handler.
-//! @warning Caller must raise SP to SPL_SYNC.
+//! @warning Caller must raise SPL to SPL_ISR.
 //!
 static inline void
 _hal_intr_swi_dispatch(void)
@@ -61,9 +61,9 @@ _hal_intr_swi_dispatch(void)
     while (g_hal_intr_dispatch_req != 0)
     {
         g_hal_intr_dispatch_req = 0;
-        hal_async_lower_spl(SPL_DISPATCH);
+        hw_cpu_intr_enable();
         fx_dispatch_handler();
-        (void) hal_async_raise_spl(SPL_SYNC);
+        hw_cpu_intr_disable();
     } 
 }
 
@@ -75,12 +75,6 @@ hal_async_raise_spl(const spl_t spl)
 {
     hw_cpu_intr_disable();
     const spl_t old_spl = _hal_async_spl_set(spl);
-
-    if (spl != SPL_SYNC)
-    {
-        hw_cpu_intr_enable();
-    }
-
     return old_spl;
 }
 
@@ -98,8 +92,7 @@ hal_async_lower_spl(const spl_t spl)
     {
         hal_intr_check_swi();
     }
-
-    if (spl != SPL_SYNC)
+    else if (spl != SPL_SYNC)
     {
         hw_cpu_intr_enable();
     }
@@ -148,17 +141,16 @@ hal_intr_handler(uint32_t mcause)
     }
     else
     {
-        hw_cpu_intr_enable();
         fx_intr_handler();
     }
 
+    hw_cpu_intr_disable();
+
     if (prev_spl == SPL_LOW)
     {
-        (void) hal_async_raise_spl(SPL_SYNC);
         _hal_intr_swi_dispatch();
     }
-
-    hw_cpu_intr_disable();
+    
     _hal_async_spl_set(prev_spl);
 }
 
@@ -173,7 +165,7 @@ hal_intr_handler(uint32_t mcause)
 void
 hal_swi_handler(void)
 {
-    (void) hal_async_raise_spl(SPL_SYNC);
+    _hal_async_spl_set(SPL_ISR);
     _hal_intr_swi_dispatch(); 
     _hal_async_spl_set(SPL_LOW);    
 }
@@ -242,4 +234,3 @@ hal_intr_frame_alloc(hal_intr_frame_t* base)
 
     return frame;
 }
-
