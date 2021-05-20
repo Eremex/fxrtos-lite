@@ -30,6 +30,7 @@
   *  POSSIBILITY OF SUCH DAMAGE.
   *****************************************************************************/
 
+#include FX_INTERFACE(HW_CPU)
 #include FX_INTERFACE(HAL_INIT)
 #include FX_INTERFACE(HAL_CPU_INTR)
 #include FX_INTERFACE(FX_TIMER)

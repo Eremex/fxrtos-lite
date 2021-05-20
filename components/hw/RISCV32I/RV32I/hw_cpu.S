@@ -35,8 +35,10 @@
 ;//
 #ifndef FX_INTERFACE
 #include <LANG_ASM.h>
+#include <CFG_OPTIONS.h>
 #else
 #include FX_INTERFACE(LANG_ASM)
+#include FX_INTERFACE(CFG_OPTIONS)
 #endif
 
 ;FX_METADATA(({ implementation: [HW_CPU, RV32I] }))
@@ -48,7 +50,7 @@ ASM_ENTRY1(hw_cpu_dmb)
 ASM_ENTRY1(hw_cpu_atomic_cas)
     fence
     csrr    t0, mstatus
-    csrc    mstatus, 8
+    csrc    mstatus, RV_SPEC_MSTATUS_MIE
     lw      t1, (a0)
     bne     t1, a1, 1f
     sw      a2, (a0)
@@ -61,7 +63,7 @@ ASM_ENTRY1(hw_cpu_atomic_cas)
 ASM_ENTRY1(hw_cpu_atomic_swap)
     fence
     csrr    t0, mstatus
-    csrc    mstatus, 8
+    csrc    mstatus, RV_SPEC_MSTATUS_MIE
     lw      t1, (a0)
     sw      a1, (a0)
     csrw    mstatus, t0
@@ -72,7 +74,7 @@ ASM_ENTRY1(hw_cpu_atomic_swap)
 ASM_ENTRY1(hw_cpu_atomic_add)
     fence
     csrr    t0, mstatus
-    csrc    mstatus, 8
+    csrc    mstatus, RV_SPEC_MSTATUS_MIE
     lw      t1, (a0)
     add     a1, a1, t1
     sw      a1, (a0)
@@ -82,7 +84,7 @@ ASM_ENTRY1(hw_cpu_atomic_add)
     ret
 
 ASM_ENTRY1(hw_cpu_clz)
-	mv		a1, a0
+    mv      a1, a0
     li	    a2, 0x80000000
     li      a0, 0
 1:
@@ -112,9 +114,9 @@ ASM_ENTRY1(hw_cpu_idle)
     ret
 
 ASM_ENTRY1(hw_cpu_intr_enable)
-    csrs    mstatus, 8
+    csrs    mstatus, RV_SPEC_MSTATUS_MIE
     ret
 
 ASM_ENTRY1(hw_cpu_intr_disable)
-    csrc    mstatus, 8
+    csrci   mstatus, RV_SPEC_MSTATUS_MIE
     ret
