@@ -15,6 +15,8 @@ OBJS = $(C_SRCS:.c=.o) $(ASM_SRCS:.S=.o)
 CFLAGS=-pedantic -std=c99 -O2 -Wall -ffunction-sections -march=rv32i -mabi=ilp32 -Isrc -ffreestanding -include includes.inc
 ASFLAGS=-include includes.inc -march=rv32i -mabi=ilp32 -Isrc
 
+MAP_FILE ?= lite.map
+
 lib: $(OBJS)
 	$(GCC_PREFIX)ar rcs libfxrtos.a $(OBJS)
 	echo '#define FX_INTERFACE(hdr) <stddef.h>' > FXRTOS.h
@@ -27,7 +29,7 @@ src:
 	@echo Performing dependency injection: sources root = $(FXRTOS_DIR)
 	mkdir src
 	export FX_PREP="$(GCC_PREFIX)gcc -E -Isrc -ffreestanding -include %s %s"; \
-	$(realpath $(FXDJ)) -p .,$(FXRTOS_DIR)/components -a default.map -t FXRTOS -o src -l src/fxrtos.lst || (rmdir src; exit 1)
+	$(realpath $(FXDJ)) -p .,$(FXRTOS_DIR)/components -a $(MAP_FILE) -t FXRTOS -o src -l src/fxrtos.lst || (rmdir src; exit 1)
 	echo '#define FX_INTERFACE(hdr) <hdr.h>' > src/includes.inc
 	echo '#define FX_METADATA(data)' >> src/includes.inc
 
