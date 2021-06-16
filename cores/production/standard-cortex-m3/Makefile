@@ -17,6 +17,10 @@ ASFLAGS=-include includes.inc -mcpu=cortex-m3 -Isrc
 
 MAP_FILE ?= lite.map
 
+all:
+	${MAKE} src
+	${MAKE} lib
+
 lib: $(OBJS)
 	$(GCC_PREFIX)ar rcs libfxrtos.a $(OBJS)
 	echo '#define FX_INTERFACE(hdr) <stddef.h>' > FXRTOS.h

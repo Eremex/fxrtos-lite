@@ -84,11 +84,11 @@ ASM_ENTRY1(hw_cpu_atomic_add)
     ret
 
 ASM_ENTRY1(hw_cpu_clz)
-	mv		a1, a0
-    li	    a2, 0x80000000
+    mv      a1, a0
+    li      a2, 0x80000000
     li      a0, 0
 1:
-    and	    a3, a2, a1
+    and     a3, a2, a1
     bnez    a3, 2f
     addi    a0, a0, 1
     srli    a2, a2, 1
@@ -97,11 +97,11 @@ ASM_ENTRY1(hw_cpu_clz)
     ret
 
 ASM_ENTRY1(hw_cpu_ctz)
-	mv		a1, a0
-    li	    a2, 1
+    mv      a1, a0
+    li      a2, 1
     li      a0, 0
 1:
-    and	    a3, a2, a1
+    and     a3, a2, a1
     bnez    a3, 2f
     addi    a0, a0, 1
     slli    a2, a2, 1
