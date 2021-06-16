@@ -49,6 +49,7 @@ uintptr_t hw_cpu_mscratch_get(void);
 void hw_cpu_mscratch_set(uintptr_t);
 uintptr_t hw_cpu_mstatus_get(void);
 uintptr_t hw_cpu_mie_get(void);
+uintptr_t hw_cpu_mcause_get(void);
 void hw_cpu_mie_set(uintptr_t);
 void hw_cpu_msie_set(unsigned int);
 
