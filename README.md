@@ -1,3 +1,8 @@
+<a href="https://scan.coverity.com/projects/eremex-fxrtos-lite">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/23951/badge.svg"/>
+</a>
+=====
 Description
 -----------
 
