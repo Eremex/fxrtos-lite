@@ -9,11 +9,15 @@ if "%1"=="clean" (
 	exit /b 0
 ) 
 
+if "%MAP_FILE%"=="" (
+	set MAP_FILE=lite.map
+)
+
 if not exist src (	
 	mkdir src
 	echo Performing dependency injection...
 	set FX_PREP=%GCC_PREFIX%gcc -E -Isrc -include %%s %%s
-	%FXDJ% -p .,%FXRTOS_DIR%\components -t FXRTOS -a default.map -o src -l src\fxrtos.lst
+	%FXDJ% -p .,%FXRTOS_DIR%\components -t FXRTOS -a %MAP_FILE% -o src -l src\fxrtos.lst
 	echo #define FX_METADATA^(data^) > src/includes.inc
 	echo #define FX_INTERFACE^(hdr^) ^<hdr.h^> >> src/includes.inc	
 )
@@ -29,13 +33,13 @@ echo Compiling...
 
 for %%f in (*.c) do (
 	echo %%f
-	%GCC_PREFIX%gcc -pedantic -std=c99 -O2 -Wall -include includes.inc -march=rv32i -I. -c -o %%~nf.o %%f
+	%GCC_PREFIX%gcc -pedantic -std=c99 -O2 -ffunction-sections -Wall -include includes.inc -march=rv32i -mabi=ilp32 -I. -c -o %%~nf.o %%f
 	call set OBJS=%%OBJS%% %%~nf.o
 )
 
 for %%f in (*.S) do (
 	echo %%f
-	%GCC_PREFIX%gcc -march=rv32i -I. -include includes.inc -c -o %%~nf.o %%f
+	%GCC_PREFIX%gcc -march=rv32i -mabi=ilp32 -I. -include includes.inc -c -o %%~nf.o %%f
 	call set OBJS=%%OBJS%% %%~nf.o
 )
 
