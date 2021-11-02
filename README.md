@@ -70,10 +70,10 @@ For those who do not want to mess with toolchains and source code we provide pre
     - FXRTOS_DIR as path to kernel root folder
     - GCC_PREFIX as compiler prefix if you use GCC (i.e. 'arm-none-eabi-' for ARM)
     - FXDJ as dependency injection tool (i.e. 'fx-dj.py')
-- Enter directory for target core (i.e. 'cores\standard-cortex-m3')
+- Enter directory for target core (e.g. 'cores\standard-cortex-m3')
 - Run 'build.bat' on Windows or 'make src' and then 'make lib' on Linux/Mac (ARM only)
 
-### How to apply
+### How to use
 The OS may be linked to the project as a binary or it can be added as set of source files in IDE.
 Demonstrations of use are located in [fxrtos-examples](https://github.com/Eremex/fxrtos-examples) repo.
 
