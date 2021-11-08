@@ -2,7 +2,10 @@
   <img alt="Coverity Scan Build Status"
        src="https://scan.coverity.com/projects/23951/badge.svg"/>
 </a>
-
+<a href="https://github.com/eremex/fxrtos-lite/actions">
+  <img alt="Build Status"
+       src="https://github.com/eremex/fxrtos-lite/actions/workflows/build.yml/badge.svg"/>
+</a>
 
 Description
 -----------
