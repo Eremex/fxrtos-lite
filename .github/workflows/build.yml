@@ -1,0 +1,66 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-risc-v:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup riscv gnu/gcc toolchain
+      uses: gregdavill/setup-riscv-gnu-toolchain@v1.0
+    
+    - name: Checkout kernel
+      uses: actions/checkout@v2
+      with:
+        path: 'kernel'
+
+    - name: Checkout tools
+      uses: actions/checkout@v2
+      with:
+        repository: eremex/fx-dj
+        path: 'scripts/fx-dj'
+
+    - name: ls -l .
+      run: ls -l .
+    - name: realpath fx-dj.py
+      run: realpath fx-dj.py
+    - name: chmod +x fx-dj.py
+      run: chmod +x $GITHUB_WORKSPACE/scripts/fx-dj/fx-dj.py
+    - name: make -C cores/production/standard-riscv32i-GNU-tools
+      run: GCC_PREFIX=riscv-none-embed- FXDJ=$GITHUB_WORKSPACE/scripts/fx-dj/fx-dj.py FXRTOS_DIR=$GITHUB_WORKSPACE/kernel make -C kernel/cores/production/standard-riscv32i-GNU-tools
+    - name: ls -l kernel/cores/production/standard-riscv32i-GNU-tools
+      run: ls -l kernel/cores/production/standard-riscv32i-GNU-tools
+
+  build-arm:
+    runs-on: ubuntu-latest
+    steps:
+    - name: arm-none-eabi-gcc
+      uses: ryanwinter/arm-none-eabi-gcc@master
+      with:
+        release: '10-2021.07' # The arm-none-eabi-gcc release to use.
+    
+    - name: Checkout kernel
+      uses: actions/checkout@v2
+      with:
+        path: 'kernel'
+
+    - name: Checkout tools
+      uses: actions/checkout@v2
+      with:
+        repository: eremex/fx-dj
+        path: 'scripts/fx-dj'
+
+    - name: realpath fx-dj.py
+      run: realpath fx-dj.py
+    - name: chmod +x fx-dj.py
+      run: chmod +x $GITHUB_WORKSPACE/scripts/fx-dj/fx-dj.py
+    - name: make -C cores/production/standard-cortex-m3
+      run: GCC_PREFIX=arm-none-eabi- FXDJ=$GITHUB_WORKSPACE/scripts/fx-dj/fx-dj.py FXRTOS_DIR=$GITHUB_WORKSPACE/kernel make -C kernel/cores/production/standard-cortex-m3
+    - name: ls -l kernel/cores/production/standard-cortex-m3
+      run: ls -l kernel/cores/production/standard-cortex-m3
+    - name: zip -r standard-cortex-m3.zip kernel/cores/production/standard-cortex-m3
+      run: zip -r standard-cortex-m3.zip kernel/cores/production/standard-cortex-m3  
