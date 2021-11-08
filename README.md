@@ -39,7 +39,7 @@ Lite version supports only two most common CPU architectures:
 ### Current configurations:
  Release | Platform
 :--- | :---
-`async-cortex-m3-GNU-tools.zip` | Minimal OS using event service routines instead threads for cortex-m3+ MCU's
+`async-cortex-m3-GNU-tools.zip` | Minimal OS using interrupt-driven routines instead of threads for cortex-m3+ MCU's
 `standard-cortex-m3.zip` | Regular configuration for cortex-m3+ MCU's
 `standard-riscv32i-GNU-tools.zip` | Regular configuration for RISC-V rv32i ISA
 
