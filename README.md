@@ -60,21 +60,20 @@ In case if you just need a kernel to use in your embedded application consider u
 - Download and unpack appropriate release archive from [Releases](https://github.com/Eremex/fxrtos-lite/releases)
 - Ensure supported compiler is available via PATH
 - Set GCC_PREFIX as compiler prefix if you use GCC (i.e. 'riscv-none-embed-')
-- Enter directory where build.bat is located
-- Run 'build.bat'
+- Enter directory where build.bat and Makefile are located
+- Run 'build.bat' or 'make' command
 
 For those who do not want to mess with toolchains and source code we provide prebuilt binaries. While binary version may be sufficient for most users it lacks configuration and optimization options.
 
 ### How to build the library from scratch:
 
-- Ensure [fx-dj.py](https://github.com/Eremex/fx-dj) script is available via PATH
-- Ensure supported compiler is available via PATH
 - Set environment variables
     - FXRTOS_DIR as path to kernel root folder
     - GCC_PREFIX as compiler prefix if you use GCC (i.e. 'arm-none-eabi-' for ARM)
-    - FXDJ as dependency injection tool (i.e. 'fx-dj.py')
+    - FXDJ as path to [fx-dj.py](https://github.com/Eremex/fx-dj) dependency injection tool
 - Enter directory for target core (e.g. 'cores\standard-cortex-m3')
 - Run 'build.bat' on Windows or 'make src' and then 'make lib' on Linux/Mac (ARM only)
+- If dependency building finished with errors, before retry you need to remove ./src directory
 
 ### How to use
 The OS may be linked to the project as a binary or it can be added as set of source files in IDE.
