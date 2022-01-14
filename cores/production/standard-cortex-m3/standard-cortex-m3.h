@@ -1,9 +1,9 @@
-#ifndef _FXRTOS_STANDARD_CM3_GNU_HEADER_
-#define _FXRTOS_STANDARD_CM3_GNU_HEADER_
+#ifndef _FXRTOS_STANDARD_CM3_HEADER_
+#define _FXRTOS_STANDARD_CM3_HEADER_
 
 /** 
   ******************************************************************************
-  *  @file   standard-cortex-m3-options.h
+  *  @file   standard-cortex-m3.h
   *  @brief  Kernel dependencies.
   ******************************************************************************
   *  Copyright (C) JSC EREMEX, 2008-2020.
@@ -44,7 +44,7 @@
 #include FX_INTERFACE(FX_COND)
 #include FX_INTERFACE(FX_MEM_POOL)
 
-FX_METADATA(({ interface: [FXRTOS, STANDARD_CORTEX_M3_GNU] }))
+FX_METADATA(({ interface: [FXRTOS, STANDARD_CORTEX_M3] }))
 
 #endif
 

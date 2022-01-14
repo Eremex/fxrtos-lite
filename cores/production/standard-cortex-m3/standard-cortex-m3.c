@@ -29,5 +29,4 @@
 
 #include FX_INTERFACE(FXRTOS)
 
-FX_METADATA(({ implementation: [FXRTOS, STANDARD_CORTEX_M3_GNU] }))
-
+FX_METADATA(({ implementation: [FXRTOS, STANDARD_CORTEX_M3] }))

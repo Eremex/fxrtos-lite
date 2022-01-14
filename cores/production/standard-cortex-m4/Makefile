@@ -12,8 +12,8 @@ C_SRCS = $(wildcard src/*.c)
 ASM_SRCS = $(wildcard src/*.S)
 OBJS = $(C_SRCS:.c=.o) $(ASM_SRCS:.S=.o)
 
-CFLAGS=-pedantic -std=c99 -O2 -Wall -ffunction-sections -mcpu=cortex-m3 -mthumb -Isrc -ffreestanding -include includes.inc
-ASFLAGS=-include includes.inc -mcpu=cortex-m3 -Isrc
+CFLAGS=-pedantic -std=c99 -O2 -Wall -ffunction-sections -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -Isrc -ffreestanding -include includes.inc
+ASFLAGS=-include includes.inc -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -Isrc
 
 MAP_FILE ?= lite.map
 
