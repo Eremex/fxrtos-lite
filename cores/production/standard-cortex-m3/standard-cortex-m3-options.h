@@ -1,5 +1,5 @@
-#ifndef _CFG_OPTIONS_STD_CM3_GNU_HEADER_
-#define _CFG_OPTIONS_STD_CM3_GNU_HEADER_
+#ifndef _CFG_OPTIONS_STD_CM3_HEADER_
+#define _CFG_OPTIONS_STD_CM3_HEADER_
 
 /** 
   ******************************************************************************
@@ -35,9 +35,10 @@
 #define FX_TIMER_THREAD_STACK_SIZE 0x400
 #define HAL_INIT_INTR_STACK_SIZE 0x400
 #define RTL_MEM_POOL_MAX_CHUNK 15
+#define HW_PIT_TICK_PERIOD 100000
 
 #ifndef __IAR_SYSTEMS_ASM__
-FX_METADATA(({ interface: [CFG_OPTIONS, STANDARD_CORTEX_M3_GNU] }))
+FX_METADATA(({ interface: [CFG_OPTIONS, STANDARD_CORTEX_M3] }))
 #endif
 
 #endif
