@@ -36,8 +36,10 @@
 ;//
 #ifndef FX_INTERFACE
 #include <LANG_ASM.h>
+#include <CFG_OPTIONS.h>
 #else
 #include FX_INTERFACE(LANG_ASM)
+#include FX_INTERFACE(CFG_OPTIONS)
 #endif
 
 ;FX_METADATA(({ implementation: [HAL_CLOCK, ARMv7M_V1] }))
