@@ -4,7 +4,7 @@
   *  @brief  HAL interrupt implementation for RISCV.
   *
   ******************************************************************************
-  *  Copyright (C) JSC EREMEX, 2008-2020.
+  *  Copyright (C) JSC EREMEX, 2020-2023.
   *  Redistribution and use in source and binary forms, with or without 
   *  modification, are permitted provided that the following conditions are met:
   *  1. Redistributions of source code must retain the above copyright notice,
@@ -65,6 +65,7 @@
     cmd  x26, 108(sp); \
     cmd  x27, 112(sp);  
 
+.align 4
 ASM_ENTRY1(hal_intr_entry)
     addi    sp, sp, -CONTEXT_SIZE
     MOVE____GPRS(sw)

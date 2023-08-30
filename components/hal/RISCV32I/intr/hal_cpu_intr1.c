@@ -4,7 +4,7 @@
   *  @brief  HAL interrupt implementation for RISCV.
   *
   ******************************************************************************
-  *  Copyright (C) JSC EREMEX, 2008-2020.
+  *  Copyright (C) JSC EREMEX, 2020-2023.
   *  Redistribution and use in source and binary forms, with or without 
   *  modification, are permitted provided that the following conditions are met:
   *  1. Redistributions of source code must retain the above copyright notice,
@@ -43,7 +43,7 @@ extern void hal_intr_check_swi(void);
 extern void hal_timer_pre_tick(void);
 extern void hal_timer_post_tick(void);
 
-static inline spl_t 
+static inline spl_t
 _hal_async_spl_set(const spl_t spl)
 {
     const spl_t old_spl = g_hal_intr_current_spl;
@@ -64,13 +64,13 @@ _hal_intr_swi_dispatch(void)
         hw_cpu_intr_enable();
         fx_dispatch_handler();
         hw_cpu_intr_disable();
-    } 
+    }
 }
 
 //!
 //! Sets MIE to value corresponding to new SPL.
 //!
-spl_t 
+spl_t
 hal_async_raise_spl(const spl_t spl)
 {
     hw_cpu_intr_disable();
@@ -82,11 +82,11 @@ hal_async_raise_spl(const spl_t spl)
 //! Lower SPL and set MIE to appropriate value.
 //! Triggers dispatch interrupt is it is pending and being unmasked.
 //!
-void 
+void
 hal_async_lower_spl(const spl_t spl)
 {
     hw_cpu_intr_disable();
-    (void) _hal_async_spl_set(spl);
+    (void)_hal_async_spl_set(spl);
 
     if (spl == SPL_LOW && g_hal_intr_dispatch_req != 0)
     {
@@ -102,7 +102,7 @@ hal_async_lower_spl(const spl_t spl)
 //! Get current SPL.
 //! @return Current SPL.
 //!
-spl_t 
+spl_t
 hal_async_get_current_spl(void)
 {
     return g_hal_intr_current_spl;
@@ -113,7 +113,7 @@ hal_async_get_current_spl(void)
 //! above. If dispatch is pending then dispatch interrupt handler will be 
 //! called on SPL lowering.
 //!
-void 
+void
 hal_async_request_swi(spl_t spl)
 {
     g_hal_intr_dispatch_req = 1;
@@ -126,12 +126,12 @@ hal_async_request_swi(spl_t spl)
 //! Pending dispatch requests will be handled on return to thread from all
 //! nesting ISRs.
 //!
-void 
+void
 hal_intr_handler(uint32_t mcause)
 {
     const spl_t prev_spl = _hal_async_spl_set(SPL_ISR);
-    
-    if (mcause == HAL_INTR_TIMER_MCAUSE)
+
+    if ((mcause & HAL_INTR_MCAUSE_EXCCODE_MASK) == HAL_INTR_TIMER_MCAUSE)
     {
         hal_timer_pre_tick();
         hw_cpu_intr_enable();
@@ -150,7 +150,7 @@ hal_intr_handler(uint32_t mcause)
     {
         _hal_intr_swi_dispatch();
     }
-    
+
     _hal_async_spl_set(prev_spl);
 }
 
@@ -166,8 +166,8 @@ void
 hal_swi_handler(void)
 {
     _hal_async_spl_set(SPL_ISR);
-    _hal_intr_swi_dispatch(); 
-    _hal_async_spl_set(SPL_LOW);    
+    _hal_intr_swi_dispatch();
+    _hal_async_spl_set(SPL_LOW);
 }
 
 //!
@@ -177,7 +177,7 @@ hal_swi_handler(void)
 //! @return Pointer to previous frame.
 //! @warning May be used only in context of dispatch interrupt handler.
 //!
-hal_intr_frame_t* 
+hal_intr_frame_t*
 hal_intr_frame_switch(hal_intr_frame_t* new_frame)
 {
     hal_intr_frame_t* current_frame = hal_intr_frame_get();
@@ -192,14 +192,14 @@ hal_intr_frame_switch(hal_intr_frame_t* new_frame)
 //! (at least KER_FRAME_(ENTRY|ARG0) should be supported).
 //! @param [in] val Register value to be set.
 //!
-void 
+void
 hal_intr_frame_modify(hal_intr_frame_t* frame, int reg, uintptr_t val)
 {
     switch (reg)
     {
-        case KER_FRAME_ENTRY: frame->pc = val; break;
-        case KER_FRAME_ARG0: frame->a[0] = val; break;
-        default: break;
+    case KER_FRAME_ENTRY: frame->pc = val; break;
+    case KER_FRAME_ARG0: frame->a[0] = val; break;
+    default: break;
     }
 }
 
@@ -208,7 +208,7 @@ hal_intr_frame_modify(hal_intr_frame_t* frame, int reg, uintptr_t val)
 //! @param [in] base Pointer to allocation base.
 //! @return Pointer to allocated frame.
 //!
-hal_intr_frame_t* 
+hal_intr_frame_t*
 hal_intr_frame_alloc(hal_intr_frame_t* base)
 {
     hal_intr_frame_t* frame = base - 1;
